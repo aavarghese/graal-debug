@@ -5,6 +5,12 @@
 Vagrant.configure("2") do |config|
   config.vm.provider "docker" do |d|
     d.build_dir = "."
+    d.build_args = {
+      "INPUT_DIR" => "hello"
+    }
+    # configure docker container 
+    d.create_args = ['--cpuset-cpus=4']
+    d.create_args = ['--memory=10g']
     d.remains_running = true
   end
 end

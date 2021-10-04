@@ -1,10 +1,13 @@
 FROM ubuntu:18.04
-MAINTAINER Ansu Varghese <avarghese@us.ibm.com>
+LABEL maintainer="Ansu Varghese <avarghese@us.ibm.com>"
 
-#graavl exec jar in current dir dloaded from https://github.com/graalvm/graalvm-ce-builds/releases
-COPY graalvm-ce-java11-linux-amd64-21.2.0.tar.gz /
-#quarkus project as jar with Hello.java in current dir 
-COPY hello.jar /
+#Dockerfile input is the address to start the JDWP server on
+ARG ADDRESS localhost:8000
+
+EXPOSE 8000
+HEALTHCHECK CMD wget -q -O /dev/null http://localhost:8000/healthy || exit 1
+
+COPY JDB-1.0-SNAPSHOT.jar /
 
 RUN export DEBIAN_FRONTEND=noninteractive \
 && apt-get -qqy update \
@@ -17,7 +20,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   ant \
   build-essential \
   cpp \
-  gdb \
+  emacs \
   git \
   gradle \
   jq \
@@ -32,25 +35,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   unzip \
   wget \
   valgrind \
+  vim \
   zlib1g-dev
 
 RUN export DEBIAN_FRONTEND=noninteractive \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
 
-RUN tar -xzf graalvm-ce-java11-linux-amd64-21.2.0.tar.gz
-ENV PATH /graalvm-ce-java11-21.2.0/bin:$PATH
-ENV JAVA_HOME /graalvm-ce-java11-21.2.0/
-ENV GRAALVM_HOME /graalvm-ce-java11-21.2.0/
-RUN gu install native-image
-
-RUN git clone https://github.com/graalvm/mx.git
-ENV PATH /mx:$PATH
-
-RUN jar xvf hello.jar
-RUN cd code-with-quarkus/ \
-&& chmod -R a+rwx * \
-&& mvn dependency:sources \
-&& ./mvnw package -Pnative -Dquarkus.native.debug.enabled=true
-
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+#Java wrapper starting JDWP server listening for JDWP request packets
+ENTRYPOINT ["java", "-cp", "/JDB-1.0-SNAPSHOT.jar", "jdb.JDWPServer", "$ADDRESS"]

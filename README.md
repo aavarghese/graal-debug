@@ -8,7 +8,7 @@ First, download graalvm binary for Linux from https://github.com/graalvm/graalvm
 brew install vagrant
 vagrant autocomplete install --bash --zsh
 vagrant up
-vagrant docker-exec default -it -- /bin/sh
+vagrant docker-exec default -it -- /bin/bash
 ```
 
 Once you have exec'ed into the docker container, you can do the following:
