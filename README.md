@@ -2,7 +2,11 @@
 
 Clone this repo, and then run the following commands:
 
-First, download graalvm binary for Linux from https://github.com/graalvm/graalvm-ce-builds/releases and place `graalvm-ce-java11-linux-amd64-21.2.0.tar.gz` into the same directory `graal-debug`.
+First, download graalvm binary for Linux from https://github.com/graalvm/graalvm-ce-builds/releases and untar `graalvm-ce-java11-linux-amd64-21.2.0.tar.gz` into the same directory `graal-debug`.
+
+```
+ tar -xzf graalvm-ce-java11-linux-amd64-21.2.0.tar.gz 
+```
 
 ```
 brew install vagrant

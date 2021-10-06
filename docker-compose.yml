@@ -6,21 +6,21 @@ services:
       context: "."
       dockerfile: "Dockerfile.gdb"
     volumes:
-      - .:/code
-      - static:/app/priv/static
+      - ./data:/code
+      - shared-tmpfs:/app
 
   jdwp:
     build: .
     volumes:
-      - .:/code
-      - static:/app/priv/static
+      - ./data:/code
+      - shared-tmpfs:/app
     ports:
       - "8000:8000"
-    depends_on:
-      - gdb
 
 volumes:
-  static:
+  shared-tmpfs:
+    driver: local
     driver_opts:
       device: tmpfs
       type: tmpfs
+      o: "size=256m,uid=1000"
