@@ -11,6 +11,7 @@ HEALTHCHECK CMD wget -q -O /dev/null http://localhost:8000/healthy || exit 1
 WORKDIR /jdwp
 
 COPY JDB-1.0-SNAPSHOT.jar /jdwp
+COPY sa-jdi.jar /jdwp
 
 RUN export DEBIAN_FRONTEND=noninteractive \
 && apt-get -qqy update \
@@ -22,4 +23,5 @@ ENV PROCESS_ID=$PROCESSID_ARG
 #ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=y
 
 #Java wrapper starting JDWP server listening for JDWP request packets
-ENTRYPOINT java --add-modules=jdk.hotspot.agent --add-exports "jdk.hotspot.agent/sun.jvm.hotspot=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.oops=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.tools=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.runtime=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.classfile=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.utilities=ALL-UNNAMED" -cp JDB-1.0-SNAPSHOT.jar JDWPServer $PROCESS_ID $SOCKET_ADDRESS
+ENTRYPOINT java -cp sa-jdi.jar:JDB-1.0-SNAPSHOT.jar JDWPServer $PROCESS_ID $SOCKET_ADDRESS
+#ENTRYPOINT java --add-modules=jdk.hotspot.agent --add-exports "jdk.hotspot.agent/sun.jvm.hotspot=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.oops=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.tools=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.runtime=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.classfile=ALL-UNNAMED" --add-exports "jdk.hotspot.agent/sun.jvm.hotspot.utilities=ALL-UNNAMED" -cp JDB-1.0-SNAPSHOT.jar JDWPServer $PROCESS_ID $SOCKET_ADDRESS

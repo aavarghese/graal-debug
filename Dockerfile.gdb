@@ -17,6 +17,7 @@ COPY graalvm-ce-java11-21.2.0 /gdb/graalvm-ce-java11-21.2.0
 COPY JDB-1.0-SNAPSHOT.jar /gdb
 COPY getting-started /gdb/getting-started
 COPY Hello /gdb/Hello
+COPY sa-jdi.jar /gdb
 
 RUN export DEBIAN_FRONTEND=noninteractive \
 && apt-get -qqy update \
